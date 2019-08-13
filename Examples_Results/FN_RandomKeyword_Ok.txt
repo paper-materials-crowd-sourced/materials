@@ -1,0 +1,12 @@
+https://raw.githubusercontent.com/madeso/finans/master/finans/core/stringutils.cc
+https://raw.githubusercontent.com/jamesandersen/go-sudoku/develop/sudokuparser/sudoku_parser.cpp
+https://raw.githubusercontent.com/milleniumbug/gdbplz/master/src/include/gdbplz/utility/blocking_queue.hpp
+https://raw.githubusercontent.com/bebosudo/sest/master/hw/src/SEST.cpp
+https://raw.githubusercontent.com/choishingwan/PRSice/master/inc/misc.hpp
+https://raw.githubusercontent.com/ros-planning/moveit/kinetic-devel/moveit_setup_assistant/src/widgets/setup_assistant_widget.cpp
+https://raw.githubusercontent.com/kalov/ShapePFCN/master/Thea/Code/Source/AlignedAllocator.hpp
+https://raw.githubusercontent.com/BarsegovGroup/SOP-GPU/master/src/Util/mystl.cpp
+https://raw.githubusercontent.com/klyshko/SOP-GPU/master/src/Util/mystl.cpp
+https://raw.githubusercontent.com/dvalters/HAIL-CAESAR/master/src/topotools/LSDStatsTools.cpp
+
+

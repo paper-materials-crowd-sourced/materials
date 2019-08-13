@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+
+{% block title %} Answers Contain Greater t han 50 Chars {% endblock %}
+
+{% block content %}
+    <div class="list-group">
+        {% for answer in answers %}
+            <div class="row">
+                <div class="col-md-9">
+                    <h4>
+                        <a href="/answers/{{ answer.answer_id }}/" class="list-group-item list-group-item-dark">
+                            {{ answer.answer_id }}
+                            <span class="float-right">
+                                <span class="badge badge-success">
+                                    {{ answer.counts }}
+                                </span>
+                            </span>
+                        </a>
+                    </h4>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+    <div>
+        <ul class="pagination justify-content-center">
+            {% if answers.has_previous %}
+                <li class="page-item">
+                    <a class="page-link" href="?page=1" >&laquo; first</a>
+                </li>
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ answers.previous_page_number }}">previous</a>
+                </li>
+            {% endif %}
+
+
+            <li class="page-item disabled">
+                <a class="page-link" href="#" >Page {{ answers.number }} of {{ answers.paginator.num_pages }}</a>
+            </li>
+
+            {% if answers.has_next %}
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ answers.next_page_number }}" >next</a>
+                </li>
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ answers.paginator.num_pages }}">last &raquo;</a>
+                </li>
+            {% endif %}
+        </ul>
+    </div>
+{% endblock %}
+
+{% block customs %}
+    <script src="{% static "js/answer.js" %}"></script>
+{% endblock %}

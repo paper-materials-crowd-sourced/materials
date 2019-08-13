@@ -1,0 +1,196 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+
+{% block title %} Answers List {% endblock %}
+{% block content %}
+    <div>
+        <h4 class="text-center">Answer ID: {{ answer_id }}</h4>
+        <h3 class="text-center">
+            <a class="btn btn-warning" href="https://stackoverflow.com/a/{{ answer_id }}" target="_blank">StackOverflow</a>
+            <a class="btn btn-danger" href="https://stackoverflow.com/posts/{{ answer_id }}/revisions" target="_blank">Other Revisions</a>
+        </h3>
+    </div>
+        {% for code in codes %}
+            <div class="row">
+                <div class="col">
+                    <div class="card bg-light mb-3">
+                      <div class="card-header">
+                          <h5>
+                              <stron>{{ code.filename }}</stron>
+                              <div class="float-right">
+                                  <span id="vuln_saved_{{ code.id }}" style="color:green;"></span>
+                                  Vulnerable ?
+                                <input type="checkbox" name="{{ code.id }}" checked="{{ code.is_vulnerable }}" class="vuln_class">
+                              </div>
+                          </h5>
+                      </div>
+                      <div class="card-body">
+                        <h5 class="card-title">Description</h5>
+                        <p class="card-text">
+                            <div class="form-group">
+                                <textarea class="form-control descrption_md" id="description_{{ code.id }}" rows="5">{{ code.description }}</textarea>
+                            </div>
+                            <div class="form-group">
+                                <input class="newtag form-text form-control" value="">
+                            </div>
+                            <div class="form-group">
+                                <input class="btn btn-success add_tag" id="add_tag_{{ code.id }}" type="button" value="Add tag">
+                                <span id="tag_added_{{ code.id }}" style="color: darkred;"></span>
+                            </div>
+                            <br>
+
+                          <div class="form-group">
+                              <select id='tags_desc_{{ code.id }}' class="form-control tags_desc" name="tags[]" multiple="multiple" style="width: 100%">
+                              </select>
+                          </div>
+                            <div class="form-group">
+                                <button class="btn btn-primary col" id="button_{{ code.id }}">Update</button>
+                                <span id="desc_saved_{{ code.id }}" style="color: darkred;"></span>
+                            </div>
+                        </p>
+                      </div>
+
+                        <div class="card-body">
+                        <h5 class="card-title">Snippet Code</h5>
+                        <p class="card-text">
+                            <pre>
+                                <code class="cpp">
+    {{ code.snipped_code.strip }}
+                                </code>
+                            </pre>
+                        </p>
+                      </div>
+                    </div>
+        </div>
+            </div>
+        {% endfor %}
+{% endblock %}
+
+{% block customs %}
+    <script>
+        let textareas = {};
+        $(document).ready(function(){
+
+            for (let md of document.querySelectorAll("textarea.descrption_md")){
+                    textareas[md.id] = new SimpleMDE({ element: md });
+            }
+        });
+    </script>
+    <script src="{% static "js/answer.js" %}"></script>
+    <script>
+    $(document).ready(function() {
+         function fillTags(callback=()=>{}) {
+            $.ajax({
+                type: "GET",
+                url: '/tags',
+                success: (data) => {
+                    let options = "";
+                    for (let tag of data) {
+                        options += `<option value='${tag.id}'>${tag.name}</option>`
+                    }
+                    $("select").html(options);
+                    $("select").trigger('change');
+
+                    callback()
+
+                },
+                contentType: 'application/json; charset=utf-8',
+                dataType: 'json'
+            });
+        }
+
+        function selectTags() {
+
+            $(".add_tag").on('click',function(){
+                let newtagText = $(this).parent().parent().find('.newtag').val();
+                let id = $(this).attr('id').replace('add_tag_','');
+                let added_tag = $("#tag_added_"+id);
+                $.ajax({
+                    type: "POST",
+                    url: "/tags/add/",
+                    data: JSON.stringify({tag: newtagText }),
+                    success: (data)=>{
+                        $(this).parent().parent().find('.newtag').val('');
+                        let newOption = new Option(data.name, data.id, true, false);
+                        $(this).parent().parent().find('select').append(newOption).trigger('change');
+                        added_tag.text("new Tag Added to the list, now choose it from the Tags List");
+                        added_tag.show("fast").delay(4000).hide("fast");
+                    },
+                    contentType: 'application/json; charset=utf-8',
+                    dataType: 'json'
+                 });
+            });
+
+            let answer_id = {{ answer_id }};
+            $.ajax({
+                type: "GET",
+                url: `/answers/${answer_id}/codes/`,
+                success: (data)=>{
+                    go(JSON.parse(data));
+                }
+            });
+
+        }
+
+        function go(ids){
+             for (let id of ids){
+
+                $.ajax({
+                    type: "GET",
+                    url: `/code/${id}/tags/`,
+                    success: (data)=>{
+                        $('#tags_desc_'+id).val(Object.values(data)).trigger("change");
+                    },
+                    contentType: 'application/json; charset=utf-8',
+                    dataType: 'json'
+                });
+
+                $("#button_" + id ).on('click',function(){
+                    var selectedValues = [];
+                    $("#tags_desc_" + id +" :selected").each(function(){
+                        selectedValues.push($(this).val());
+                    });
+
+                    let reportJson = {
+                        {#'description': $('#description_' + id).val(),#}
+                        'description' : textareas['description_' + id].value(),
+                        'tag_ids': selectedValues
+                    };
+                    let desc_saved_ = $("#desc_saved_"+id);
+                    $.ajax({
+                        type: "POST",
+                        url: `/updateDes/${id}/`,
+                        data: JSON.stringify(reportJson),
+                        success: (data)=>{
+                            desc_saved_.text("Saved");
+                            desc_saved_.show("fast").delay(1000).hide("fast");
+                        },
+                        contentType: 'application/json; charset=utf-8',
+                        dataType: 'json'
+                    });
+
+                });
+
+                const currentId = "#tags_desc_" + id;
+                $(currentId).select2(
+                    {
+                    tags: true,
+                    tokenSeparators: [','],
+                    createTag: function (params) {
+                        var term = $.trim(params.term);
+                        if (term === '') {
+                            return null;
+                        }
+                        return {
+                            id: term,
+                            text: term,
+                        }
+                     }}
+                    );
+            }
+        }
+
+        fillTags(selectTags);
+    });
+    </script>
+{% endblock %}

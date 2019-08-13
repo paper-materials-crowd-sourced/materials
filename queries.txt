@@ -1,0 +1,800 @@
+Number of C++ Questions: 583415
+-----------------------------------------------
+select 
+   Count(Posts.Id)
+   from 
+   [sotorrent-org.2018_09_23.Posts] Posts
+where (Tags LIKE "%<c++>%" or Tags Like "%<C++>%") AND PostTypeId = 1
+
+--------------------------------------------------
+Number of total Answers:  1074990
+--------------------------------------------------
+SELECT
+  Count(Answer.Id)
+FROM
+  [sotorrent-org.2018_09_23.Posts] Answer
+JOIN
+  [sotorrent-org.2018_09_23.Posts] Question
+ON
+      Answer.ParentId=Question.Id
+WHERE
+      question.Tags LIKE "%<c++>%" or question.Tags LIKE "%<C++>%"
+  AND Answer.PostTypeId=2
+  AND Question.PostTypeId=1
+----------------------------------------------
+All Question AND Answer Count For Every Posts.
+ 	Question_Title 	                                                   Question_Id 	Question_Score 	Question_ViewCount 	AnswerCount 	 
+1 	Why is it faster to process a sorted array than an unsorted array?	11227809	21775	            1234224	            21 	 
+2 	What is the "-->" operator in C++?	                                 1642028	7818	             627271         	22 	 
+3 	The Definitive C++ Book Guide and List                             	388242	    4252	            1944396	             1 	 
+----------------------------------------------
+SELECT
+  Question.Title
+, Question.Id
+, Question.Score
+, Question.ViewCount
+, count(Answer.Id) AS AnswerCount
+FROM
+  [sotorrent-org.2018_09_23.Posts] Answer
+JOIN
+  [sotorrent-org.2018_09_23.Posts] Question
+ON
+      Answer.ParentId=Question.Id
+WHERE
+      question.Tags LIKE "%c++%" or question.Tags like "%C++%"
+  AND Answer.PostTypeId=2
+  AND Question.PostTypeId=1
+      Group by Question.Title, Question.Id, Question.Score, Question.ViewCount
+      order by Question.Score DESC
+LIMIT
+  500
+--------------------------------------------
+UserId Location And About Users for every Answer for Every Question.
+--------------------------------------------
+select  
+    Detail.QuestionId 
+,   Detail.QuestionTitle,
+    Detail.AnswerId,
+    Detail.QuestionScore,
+    Users.Reputation,
+    Users.DisplayName,
+    Users.AboutMe,
+    Users.Location,
+from
+   [sotorrent-org.2018_09_23.Users] Users Join
+( Select
+ Questions.Title AS QuestionTitle,
+ Questions.Id AS QuestionId,
+ Questions.Score AS QuestionScore,
+ Questions.ViewCount,
+ Answers.Id AS AnswerId,
+ Answers.OwnerUserId AS AnswerOwner,
+from
+  [sotorrent-org.2018_09_23.Posts] Answers
+JOin
+  [sotorrent-org.2018_09_23.Posts] Questions
+ON
+ Answers.ParentId = Questions.Id
+Join
+  [sotorrent-org.2018_09_23.Votes] Votes
+  ON
+ Questions.Id = Votes.PostId
+Join 
+  [sotorrent-org.2018_09_23.Users] Users
+ON
+ Votes.UserId = Users.Id
+where
+ Questions.Tags LIKE "%<c++>%" or Questions.Tags LIKE "%<C++>%"
+ AND Answers.PostTypeId =2
+ AND Questions. PostTypeId = 1
+ GRouP BY 
+  QuestionTitle, QuestionId, QuestionScore, Questions.ViewCount, AnswerId, AnswerOwner
+ order by
+ QuestionScore DESC
+ limit 500) AS Detail
+ ON Detail.AnswerOwner = Users.Id
+ order by Detail.QuestionScore desc
+
+
+-----------------------------------------------------
+Count Of History For Every Question: Oredered By Score
+11227809	           Why is it faster to process a sorted array than an unsorted array?           	21775	104 	 
+1642028	               What is the "-->" operator in C++?                                            	7818	44 	 
+388242	               The Definitive C++ Book Guide and List	                                        4252	133 	
+-----------------------------------------------------
+SELECT
+  Posts.Id
+, Title
+, Posts.Score
+, COUNT ( PostHistory.Id)
+FROM
+  [sotorrent-org:2018_09_23.Posts] Posts
+JOIN
+  [sotorrent-org:2018_09_23.PostHistory] PostHistory
+ON
+  Posts.Id = PostHistory.PostId
+WHERE
+  Tags Like "%<c++>%" or Tags like "%<C++>%"
+  and 
+  PostTypeId = 1	
+  Group by Posts.Id, Title, Posts.Score
+  order by Posts.Score DESC
+----------------------------------------------------------------------------------
+All AnswerHistory Count For Every Question: Ordering by Score and Creation Date:
+Why is it faster to process a sorted array than an unsorted array?	           11227809	    21775	11227877	2012-06-27T13:54:45	3665	7 	 
+Why is it faster to process a sorted array than an unsorted array?	           11227809 	21775	11227902	2012-06-27T13:56:43	28708	30 	 
+Why is it faster to process a sorted array than an unsorted array?	           11227809  	21775	11237235	2012-06-28T02:14:04	2970	19
+----------------------------------------------------------------------------------
+SELECT
+  Question.Title
+, Question.Id
+, Question.Score
+, Answer.Id AS AnsId
+, Answer.CreationDate
+, Answer.Score AS AnsScore
+, COUNT(History.Id)AS CountAnsHisId
+FROM
+  [sotorrent-org.2018_09_23.Posts] Answer
+JOIN
+  [sotorrent-org.2018_09_23.Posts] Question
+ON
+      Answer.ParentId=Question.Id
+JOIN
+  [sotorrent-org.2018_09_23.PostHistory] History
+ON
+      Answer.Id = History.PostId
+WHERE
+      question.Tags LIKE "%c++%" or question.Tags LIKE "%C++%"
+  AND Question.PostTypeId = 1
+  AND Answer.PostTypeId = 2
+  Group by  Question.Title
+, Question.Id
+, Question.Score
+, AnsId
+, Answer.CreationDate
+, AnsScore
+     order by Question.Score DESC, Answer.CreationDate 
+-----------------------------------------------------
+All version of every answers that have  least code block:
+Question_Score 	Question_Title                                          Question_Id 	Answer_Id 	f0_ 	 
+21775	Why is it faster to process a sorted array than an unsorted array?	11227809	11227902	30 	 
+21775	Why is it faster to process a sorted array than an unsorted array?	11227809	11237235	19 	 
+21775	Why is it faster to process a sorted array than an unsorted array?	11227809	11303693	5 	 
+----------------------------------------------------
+select
+  Question.Score
+, Question.Title
+, Question.Id
+, Answer.Id 
+, Count (History.Id)
+from 
+    [sotorrent-org.2018_09_23.Posts] Question
+JOIN
+    [sotorrent-org.2018_09_23.Posts] Answer
+ON
+      Answer.ParentId=Question.Id
+JOIN
+  [sotorrent-org.2018_09_23.PostHistory] History
+ON
+      Answer.Id = History.PostId
+where Answer.Id IN 
+(select Answer.Id
+from 
+    [sotorrent-org.2018_09_23.Posts] Question
+JOIN
+    [sotorrent-org.2018_09_23.Posts] Answer
+ON
+      Answer.ParentId=Question.Id
+JOIN
+  [sotorrent-org.2018_09_23.PostHistory] History
+ON
+      Answer.Id = History.PostId
+JOIN
+  [sotorrent-org.2018_09_23.PostBlockVersion] BlockVersion
+ON
+      History.Id = BlockVersion.PostHistoryId      
+where BlockVersion.PostBlockTypeId =2  
+  AND question.Tags LIKE "%<c++>%" or question.Tags LIKE "%<C++>%"
+  AND Answer.PostTypeId=2
+  AND Question.PostTypeId=1)
+  group by   Question.Score
+, Question.Title
+, Question.Id
+, Answer.Id 
+      order by Question.Score DESC, Answer.Id ASC
+LIMIT
+  700
+------------------------------------------------------------------------------------
+Count of All Answer History from C++ Code:                   1738346      COUnt of question history:2630115
+------------------------------------------------------------------------------------
+
+SELECT
+ COUNT(History.Id)AS CountAnsHisId
+FROM
+  [sotorrent-org.2018_09_23.Posts] Answer
+JOIN
+  [sotorrent-org.2018_09_23.Posts] Question
+ON
+      Answer.ParentId=Question.Id
+JOIN
+  [sotorrent-org.2018_09_23.PostHistory] History
+ON
+      Answer.Id = History.PostId
+WHERE
+      Question.Tags LIKE "%<c++>%" or Question.Tags LIKE "%<C++>%"
+  AND Question.PostTypeId = 1
+  AND Answer.PostTypeId = 2
+---------------------------------------------------------------------------------------
+Count of All Answer have least One Code block:                1032696 
+select
+---------------------------------------------------------------------------------------
+select Count (History.Id)
+from 
+    [sotorrent-org.2018_09_23.Posts] Question
+JOIN
+    [sotorrent-org.2018_09_23.Posts] Answer
+ON
+      Answer.ParentId=Question.Id
+JOIN
+  [sotorrent-org.2018_09_23.PostHistory] History
+ON
+      Answer.Id = History.PostId
+where Answer.Id IN 
+(select Answer.Id
+from 
+    [sotorrent-org.2018_09_23.Posts] Question
+JOIN
+    [sotorrent-org.2018_09_23.Posts] Answer
+ON
+      Answer.ParentId=Question.Id
+JOIN
+  [sotorrent-org.2018_09_23.PostHistory] History
+ON
+      Answer.Id = History.PostId
+JOIN
+  [sotorrent-org.2018_09_23.PostBlockVersion] BlockVersion
+ON
+      History.Id = BlockVersion.PostHistoryId      
+where BlockVersion.PostBlockTypeId =2  
+  AND Question.Tags LIKE "%<c++>%" or Question.Tags LIKE "%<C++>%"
+  AND Answer.PostTypeId=2
+  AND Question.PostTypeId=1)
+ ------------------------------------------------------------------------------------------
+All version of Answer have no one code block in the post structure:
+Question_          Score 	Question_Title                                                 	Question_Id    Answer_Id 	Answer_LastEditDate    f0_ 	 
+1 	               21775	Why is it faster to process a sorted array than an unsorted array?	11227809	46541691	2018-03-16T10:57:24  	2 	 
+2 	               21775	Why is it faster to process a sorted array than an unsorted array?	11227809	44614591	2018-05-03T06:35:51 	13 	 
+3 	               21775	Why is it faster to process a sorted array than an unsorted array?	11227809	47141245	2018-05-31T21:33:21 	 3 	 
+-------------------------------------------------------------------------------------------------------
+select
+  Question.Score
+, Question.Title
+, Question.Id
+, Answer.Id 
+, Answer.CreationDate 
+, Answer.LastEditDate
+, COunt (History.Id)
+from 
+    [sotorrent-org.2018_09_23.Posts] Question
+JOIN
+    [sotorrent-org.2018_09_23.Posts] Answer
+ON
+      Answer.ParentId=Question.Id
+JOIN
+  [sotorrent-org.2018_09_23.PostHistory] History
+ON
+      Answer.Id = History.PostId
+where Answer.Id NOT IN 
+(select Answer.Id
+from 
+    [sotorrent-org.2018_09_23.Posts] Question
+JOIN
+    [sotorrent-org.2018_09_23.Posts] Answer
+ON
+      Answer.ParentId=Question.Id
+JOIN
+  [sotorrent-org.2018_09_23.PostHistory] History
+ON
+      Answer.Id = History.PostId
+JOIN
+  [sotorrent-org.2018_09_23.PostBlockVersion] BlockVersion
+ON
+      History.Id = BlockVersion.PostHistoryId      
+where BlockVersion.PostBlockTypeId =2  
+  AND Answer.PostTypeId=2
+  AND Question.PostTypeId=1)
+AND Question.Tags Like "%<c++>%" or Question.Tags Like "%<C++>%" 
+group by   Question.Score
+, Question.Title
+, Question.Id
+, Answer.Id 
+, Answer.LastEditDate
+, Answer.CreationDate 
+order by Question.Score DESC , Answer.CreationDate 
+-------------------------------------------------------------------------------------
+Count Of All answer history that not have code block:                   705650
+-------------------------------------------------------------------------------------
+select
+ COunt (History.Id)
+from 
+    [sotorrent-org.2018_09_23.Posts] Question
+JOIN
+    [sotorrent-org.2018_09_23.Posts] Answer
+ON
+      Answer.ParentId=Question.Id
+JOIN
+  [sotorrent-org.2018_09_23.PostHistory] History
+ON
+      Answer.Id = History.PostId
+where Answer.Id NOT IN 
+(select Answer.Id
+from 
+    [sotorrent-org.2018_09_23.Posts] Question
+JOIN
+    [sotorrent-org.2018_09_23.Posts] Answer
+ON
+      Answer.ParentId=Question.Id
+JOIN
+  [sotorrent-org.2018_09_23.PostHistory] History
+ON
+      Answer.Id = History.PostId
+JOIN
+  [sotorrent-org.2018_09_23.PostBlockVersion] BlockVersion
+ON
+      History.Id = BlockVersion.PostHistoryId      
+where BlockVersion.PostBlockTypeId =2  
+  AND Answer.PostTypeId=2
+  AND Question.PostTypeId=1)
+AND Question.Tags Like "%<c++>%" or Question.Tags Like "%<C++>%"
+--------------------------------------------------------------------------------------
+History Of Every Post chqnge in which typeb of posttypeId:
+Type_Answer_Id 	Type_c 	total_s 	 
+11237235      	13   	19 	 
+34321324        16   	19 	 
+306332         	16      19
+-------------------------------------------------------------------
+select Type.Answer.Id , Type.c , total.s
+
+from
+  (select Answer.Id , count(History.Id) as c
+  from 
+    [sotorrent-org.2018_09_23.Posts] Answer
+  join
+    [sotorrent-org.2018_09_23.Posts] Questions 
+  on 
+    Answer.ParentId = Questions.Id 
+  join 			
+    [sotorrent-org.2018_09_23.PostHistory] History
+  on 
+    Answer.Id = History.PostId
+  where
+    Questions.Tags like "%<c++>%" or Questions.Tags like "%<C++>%" 
+    and Answer.PostTypeId = 2
+    and Questions.PostTypeId = 1
+    and History.PostHistoryTypeId = 5
+    group by Answer.Id) as Type
+join   
+
+(select Answers.Answer.Id , count (History.Id) as s 
+from 
+
+(select * from 
+  [sotorrent-org.2018_09_23.Posts] Answer
+join
+  [sotorrent-org.2018_09_23.Posts] Questions 
+on 
+  Answer.ParentId = Questions.Id 
+where
+  Questions.Tags like "%<c++>%" or Questions.Tags like "%<C++>%" 
+  and Answer.PostTypeId = 2
+  and Questions.PostTypeId = 1) as Answers 
+  
+join 
+  [sotorrent-org.2018_09_23.PostHistory] History
+  
+on History.PostId = Answers.Answer.Id 
+group by Answers.Answer.Id
+order by s DESC ) as total
+
+on total.Answers.Answer.Id = Type.Answer.Id
+-----------------------------------------------------------------
+code block was change or add in the answer history:
+-----------------------------------------------------------------
+SELECT
+  Question.Title
+, Question.Score
+, Question.Id
+, Answer.Id AS AnsId
+, History.Id
+, History.PostHistoryTypeId
+, Answer.CreationDate
+, BlockVersion.Id AS BlockId
+, BlockVersion.PostBlockTypeId
+, BlockVersion.RootPostHistoryId
+, BlockVersion.RootLocalId
+, BlockVersion.LocalId
+, BlockVersion.PredPostBlockVersionId
+, BlockVersion.RootPostBlockVersionId
+, BlockVersion.PredEqual
+, BlockVersion.PredSimilarity
+FROM
+  [sotorrent-org.2018_09_23.Posts] Answer
+JOIN
+  [sotorrent-org.2018_09_23.Posts] Question
+ON
+      Answer.ParentId=Question.Id
+JOIN
+  [sotorrent-org.2018_09_23.PostHistory] History
+ON
+      Answer.Id = History.PostId
+JOIN
+  [sotorrent-org.2018_09_23.PostBlockVersion] BlockVersion
+  ON 
+    History.Id = BlockVersion.PostHistoryId
+WHERE
+      Question.Tags LIKE "%<c++>%" or Questions.Tags like "%<C++>%"
+  AND Question.PostTypeId = 1
+  AND Answer.PostTypeId = 2
+  AND (BlockVersion.PostBlockTypeId = 2 AND BlockVersion.PredSimilarity >=0 AND BlockVersion.PredSimilarity <1) or (BlockVersion.PredCount = 0   AND BlockVersion.PostBlockTypeId = 2)
+     order by Question.Score DESC,Answer.CreationDate, BlockVersion.PostHistoryId ASC, BlockVersion.LocalId ASC 
+limit 500
+-----------------------------------------------------------
+man method:
+-----------------------------------------------------------
+select
+  Question.Title
+, Question.Score
+, Answer.Id AS AnsId
+, History.Id
+, History.PostHistoryTypeId
+, History.CreationDate
+, Answer.CreationDate
+, BlockVersion.Id AS BlockId
+, BlockVersion.PostBlockTypeId
+, BlockVersion.PredEqual
+, BlockVersion.PredSimilarity
+from 
+    [sotorrent-org.2018_09_23.Posts] Question
+JOIN
+    [sotorrent-org.2018_09_23.Posts] Answer
+ON
+      Answer.ParentId=Question.Id
+JOIN
+  [sotorrent-org.2018_09_23.PostHistory] History
+ON
+      Answer.Id = History.PostId
+JOIN
+  [sotorrent-org.2018_09_23.PostBlockVersion] BlockVersion
+ON
+      History.Id = BlockVersion.PostHistoryId     
+where History.Id IN 
+(select History.Id
+from 
+    [sotorrent-org.2018_09_23.Posts] Question
+JOIN
+    [sotorrent-org.2018_09_23.Posts] Answer
+ON
+      Answer.ParentId=Question.Id
+JOIN
+  [sotorrent-org.2018_09_23.PostHistory] History
+ON
+      Answer.Id = History.PostId
+JOIN
+  [sotorrent-org.2018_09_23.PostBlockVersion] BlockVersion
+ON
+      History.Id = BlockVersion.PostHistoryId      
+where 
+      Question.Tags LIKE "%<c++>%" or Question.Tags LIKE "%<C++>%"
+  AND Answer.PostTypeId=2
+  AND Question.PostTypeId=1
+  AND ((BlockVersion.PredSimilarity >=0 AND BlockVersion.PredSimilarity <1 AND  BlockVersion.PostBlockTypeId =2 )
+  or  (BlockVersion.PredCount = 0 AND BlockVersion.PostBlockTypeId =2))) 
+  AND ((BlockVersion.PredSimilarity >=0 AND BlockVersion.PredSimilarity <1 AND  BlockVersion.PostBlockTypeId =2 )
+  or  (BlockVersion.PredCount = 0 AND BlockVersion.PostBlockTypeId =2))
+order by Question.Score DESC,Answer.CreationDate, BlockVersion.PostHistoryId ASC, BlockVersion.LocalId ASC 
+LIMIT
+  700
+-------------------------------------------------------
+Count Up
+-------------------------------------------------------
+SELECT
+  History.Id
+, COUNT(BlockVersion.Id) AS BlockId
+
+FROM
+  [sotorrent-org.2018_09_23.Posts] Answer
+JOIN
+  [sotorrent-org.2018_09_23.Posts] Question
+ON
+      Answer.ParentId=Question.Id
+JOIN
+  [sotorrent-org.2018_09_23.PostHistory] History
+ON
+      Answer.Id = History.PostId
+JOIN
+  [sotorrent-org.2018_09_23.PostBlockVersion] BlockVersion
+  ON 
+    History.Id = BlockVersion.PostHistoryId
+WHERE
+      Question.Tags LIKE "%<c++>%" or Questions.Tags like "%<C++>%"
+  AND Question.PostTypeId = 1
+  AND Answer.PostTypeId = 2
+  AND (BlockVersion.PostBlockTypeId = 2 AND BlockVersion.PredSimilarity >=0 AND BlockVersion.PredSimilarity <1) or (BlockVersion.PredEqual NOT NULL   AND BlockVersion.PostBlockTypeId = 2)
+  Group by History.Id,  Question.Score
+  order by Question.Score DESC
+limit 500
+------------------------------------------------------------------------
+what the change will be occure in the body for code block:*very nice man*
+-----------------------------------------------------------------------
+SELECT
+  Question.Title
+, Question.Score
+, Question.Id
+, Answer.Id AS AnsId
+, History.Id
+, History.PostHistoryTypeId
+, Answer.CreationDate
+, History.CreationDate
+, BlockVersion.Id AS BlockId
+, BlockVersion.RootPostHistoryId
+, BlockVersion.RootLocalId
+, BlockVersion.LocalId
+, BlockVersion.PredPostBlockVersionId
+, BlockVersion.RootPostBlockVersionId
+, BlockVersion.PredEqual
+, BlockVersion.PredSimilarity
+FROM
+  [sotorrent-org.2018_09_23.Posts] Answer
+JOIN
+  [sotorrent-org.2018_09_23.Posts] Question
+ON
+      Answer.ParentId=Question.Id
+JOIN
+  [sotorrent-org.2018_09_23.PostHistory] History
+ON
+      Answer.Id = History.PostId
+JOIN
+  [sotorrent-org.2018_09_23.PostBlockVersion] BlockVersion
+  ON 
+    History.Id = BlockVersion.PostHistoryId
+WHERE
+      Question.Tags LIKE "%<c++>%" or Questions.Tags like "%<C++>%"
+  AND Question.PostTypeId = 1
+  AND Answer.PostTypeId = 2
+  AND ((BlockVersion.PostBlockTypeId = 2 AND BlockVersion.PredSimilarity >=0 AND BlockVersion.PredSimilarity <1) or (BlockVersion.PredCount = 0   AND BlockVersion.PostBlockTypeId = 2))
+      order by Question.Score DESC,AnsId DESC ,BlockVersion.RootLocalId ASC, BlockVersion.PostHistoryId ASC
+limit 1000
+  -----------------------------------------------------------------------------------------------------------------
+  GITHUB table:
+ All the reference github in stackoverflow for every format of file for answersc C++: 160118
+  select 
+ Count ( PostReferenceGH.GHUrl) AS CountGH
+FROM
+  [sotorrent-org.2018_09_23.Posts] Question
+JOIN
+  [sotorrent-org.2018_09_23.Posts] Answer
+ON
+      Answer.ParentId=Question.Id
+JOIN
+  [sotorrent-org.2018_09_23.PostHistory] History
+ON
+      Answer.Id = History.PostId
+JOIN 
+  [sotorrent-org.2018_09_23.PostReferenceGH] AS PostReferenceGH
+ON
+  Answer.Id = PostReferenceGH.PostId
+where 
+  Question.Tags LIKE "%<c++>%" or Questions.Tags like "%<C++>%"
+  AND Question.PostTypeId = 1
+  AND Answer.PostTypeId = 2
+  -------------------------------------------------------------------------------------------------------------------
+ All the Reference github in stackoverflow for all extension in cpp file:   104068
+  
+  select 
+  COunt (PostReferenceGH.Path)
+FROM
+  [sotorrent-org.2018_09_23.Posts] Question
+JOIN
+  [sotorrent-org.2018_09_23.Posts] Answer
+ON
+      Answer.ParentId=Question.Id
+JOIN
+  [sotorrent-org.2018_09_23.PostHistory] History
+ON
+      Answer.Id = History.PostId
+JOIN 
+  [sotorrent-org.2018_09_23.PostReferenceGH] AS PostReferenceGH
+ON
+  Answer.Id = PostReferenceGH.PostId
+where 
+  Question.Tags LIKE "%c++%" or Questions.Tags like "%<C++>%"
+  AND Question.PostTypeId = 1
+  AND Answer.PostTypeId = 2
+  AND (PostReferenceGH.Path like "%.cc" 
+  or PostReferenceGH.Path like "%.C"
+  or PostReferenceGH.Path like "%.c"
+  or PostReferenceGH.Path like "%.cxx"
+  or PostReferenceGH.Path like "%.c++"
+  or PostReferenceGH.Path like "%.hh"
+  or PostReferenceGH.Path like "%.H"
+  or PostReferenceGH.Path like "%.h"
+  or PostReferenceGH.Path like "%.hxx"
+  or PostReferenceGH.Path like "%.hpp"
+  or PostReferenceGH.Path like "%.h++"
+  or PostReferenceGH.Path like "%.cpp"
+  or PostReferenceGH.Path like "%.cs"
+  or PostReferenceGH.Path like "%.asmx"
+  or PostReferenceGH.Path like "%.asp"
+  or PostReferenceGH.Path like "%.patch"
+  or PostReferenceGH.Path like "%.cu"
+  or PostReferenceGH.Path like "%.hpp"
+  or PostReferenceGH.Path like "%.v1")
+  -------
+  OR        152948
+ select 
+ Count ( PostReferenceGH.GHUrl) AS CountGH
+FROM
+  [sotorrent-org.2018_09_23.Posts] Question
+JOIN
+  [sotorrent-org.2018_09_23.Posts] Answer
+ON
+      Answer.ParentId=Question.Id
+JOIN
+  [sotorrent-org.2018_09_23.PostHistory] History
+ON
+      Answer.Id = History.PostId
+JOIN 
+  [sotorrent-org.2018_09_23.PostReferenceGH] AS PostReferenceGH
+ON
+  Answer.Id = PostReferenceGH.PostId
+where 
+  Question.Tags LIKE "%<c++>%" or Questions.Tags like "%<C++>%"
+  AND Question.PostTypeId = 1
+  AND Answer.PostTypeId = 2
+  AND PostReferenceGH.Path NOT like "%.csv" 
+  AND PostReferenceGH.Path NOT like "%.txt"
+  AND PostReferenceGH.Path NOT like "%.md"
+  AND PostReferenceGH.Path NOT like "%.html"
+  AND PostReferenceGH.Path NOT like "%.json"
+  AND PostReferenceGH.Path NOT like "%.java"
+  AND PostReferenceGH.Path NOT like "%README"
+  AND PostReferenceGH.Path NOT like "%.py"
+------------------------------------------------------------------------------
+All Answer reference github with all Url against Url's that have Cpp file extension:
+
+select ALL.Answer.Id ,CountGH,cppfile
+from
+(select 
+  Answer.Id
+, Question.Score
+, Count ( PostReferenceGH.GHUrl) AS CountGH
+FROM
+  [sotorrent-org.2018_09_23.Posts] Question
+JOIN
+  [sotorrent-org.2018_09_23.Posts] Answer
+ON
+      Answer.ParentId=Question.Id
+JOIN
+  [sotorrent-org.2018_09_23.PostHistory] History
+ON
+      Answer.Id = History.PostId
+JOIN 
+  [sotorrent-org.2018_09_23.PostReferenceGH] AS PostReferenceGH
+ON
+  Answer.Id = PostReferenceGH.PostId
+where 
+  question.Tags LIKE "%c++%" or Questions.Tags like "%<C++>%"
+  AND Question.PostTypeId = 1
+  AND Answer.PostTypeId = 2
+  Group by Answer.Id, Question.Score ) AS ALL
+JOIN
+  (select 
+   Answer.Id
+,  Count(PostReferenceGH.GHUrl) AS cppfile
+FROM
+  [sotorrent-org.2018_09_23.Posts] Question
+JOIN
+  [sotorrent-org.2018_09_23.Posts] Answer
+ON
+      Answer.ParentId=Question.Id
+JOIN
+  [sotorrent-org.2018_09_23.PostHistory] History
+ON
+      Answer.Id = History.PostId
+JOIN 
+  [sotorrent-org.2018_09_23.PostReferenceGH] AS PostReferenceGH
+ON
+  Answer.Id = PostReferenceGH.PostId
+where 
+  Question.Tags LIKE "%<c++>%" or Questions.Tags like "%<C++>%"
+  AND Question.PostTypeId = 1
+  AND (PostReferenceGH.Path like "%.cc" 
+  or PostReferenceGH.Path like "%.C"
+  or PostReferenceGH.Path like "%.c"
+  or PostReferenceGH.Path like "%.cxx"
+  or PostReferenceGH.Path like "%.c++"
+  or PostReferenceGH.Path like "%.hh"
+  or PostReferenceGH.Path like "%.H"
+  or PostReferenceGH.Path like "%.h"
+  or PostReferenceGH.Path like "%.hxx"
+  or PostReferenceGH.Path like "%.hpp"
+  or PostReferenceGH.Path like "%.h++"
+  or PostReferenceGH.Path like "%.cpp"
+  or PostReferenceGH.Path like "%.cs"
+  or PostReferenceGH.Path like "%.asmx"
+  or PostReferenceGH.Path like "%.asp"
+  or PostReferenceGH.Path like "%.patch"
+  or PostReferenceGH.Path like "%.cu"
+  or PostReferenceGH.Path like "%.hpp"
+  or PostReferenceGH.Path like "%.v1")
+  Group by Answer.Id) AS CPP
+ON 
+   ALL.Answer.Id = CPP.Answer.Id
+Group by ALL.Answer.Id,ALL.Question.Score,CountGH,cppfile
+order by CountGH DESC
+------------------------------------------------------------------------ 
+all postblock code and similar code for every Answer with content: (repetitve up)
+SELECT
+  Question.Title
+, Question.Score
+, Question.Id
+, Answer.Id AS AnsId
+, History.Id
+, History.PostHistoryTypeId
+, Answer.CreationDate
+, History.CreationDate
+, BlockVersion.Id AS BlockId
+, BlockVersion.RootPostHistoryId
+, BlockVersion.RootLocalId
+, BlockVersion.LocalId
+, BlockVersion.PredPostBlockVersionId
+, BlockVersion.RootPostBlockVersionId
+, BlockVersion.PredEqual
+, BlockVersion.PredSimilarity
+, BlockVersion.Content
+FROM
+  [sotorrent-org.2018_09_23.Posts] Answer
+JOIN
+  [sotorrent-org.2018_09_23.Posts] Question
+ON
+      Answer.ParentId=Question.Id
+JOIN
+  [sotorrent-org.2018_09_23.PostHistory] History
+ON
+      Answer.Id = History.PostId
+JOIN
+  [sotorrent-org.2018_09_23.PostBlockVersion] BlockVersion
+  ON 
+    History.Id = BlockVersion.PostHistoryId
+WHERE
+      Question.Tags LIKE "%<c++>%" or Questions.Tags like "%<C++>%"
+  AND Question.PostTypeId = 1
+  AND Answer.PostTypeId = 2
+  AND ((BlockVersion.PostBlockTypeId = 2 AND BlockVersion.PredSimilarity >=0 AND BlockVersion.PredSimilarity <1) or (BlockVersion.PredCount = 0   AND BlockVersion.PostBlockTypeId = 2))
+      order by Question.Score DESC,AnsId DESC ,BlockVersion.RootLocalId ASC, BlockVersion.PostHistoryId ASC
+limit 1000
+------------------------------------------------------------------------
+ REGEXpression:
+ DELETE Url Decode
+ SELECT
+  Question_Title,
+  Question_Score,
+  Question_Id,
+  AnsId,
+  History_Id,
+  History_PostHistoryTypeId,
+  Answer_CreationDate,
+  History_CreationDate,
+  BlockId,
+  BlockVersion_RootPostHistoryId,
+  BlockVersion_LocalId,
+  BlockVersion_RootLocalId,
+  BlockVersion_PredPostBlockVersionId,
+  BlockVersion_RootPostBlockVersionId,
+  BlockVersion_PredEqual,
+  BlockVersion_PredSimilarity,
+  REGEXP_REPLACE(BlockVersion_Content, '&#x[A-Z];', '') Content
+FROM
+  [zippy-logic-221414:SOTorrent_1.Answer_BlockVersion]
+ order by Question_Score DESC,AnsId DESC ,BlockVersion_RootLocalId ASC
+ --------------------------------------------------------------------------

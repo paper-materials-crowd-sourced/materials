@@ -1,0 +1,11 @@
+certifi==2018.11.29
+chardet==3.0.4
+Django==2.1.4
+django-bootstrap4==0.0.7
+idna==2.8
+Markdown==3.0.1
+nltk==3.4.1
+pytz==2018.7
+requests==2.21.0
+six==1.12.0
+urllib3==1.24.1

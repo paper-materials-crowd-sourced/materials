@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+
+{% block title %}
+    Categories
+{% endblock %}
+
+{% block content %}
+    <div class="row">
+        <div class="col">
+            JustLastVersions: ({{ LastVersions|length }})
+        </div>
+        <div class="col">
+            {% for ans in LastVersions %}
+                {{ ans }},
+            {% endfor %}
+        </div>
+    </div>
+    <br><br>
+    <div class="row">
+        <div class="col">
+            JustHistories: ({{ Histories|length }})
+        </div>
+        <div class="col">
+            {% for ans in Histories %}
+                {{ ans }},
+            {% endfor %}
+        </div>
+    </div>
+    <br><br>
+    <div class="row">
+        <div class="col">
+            Both : ({{ Both|length }})
+        </div>
+        <div class="col">
+            {% for ans in Both %}
+                {{ ans }},
+            {% endfor %}
+        </div>
+    </div>
+
+{%  endblock %}

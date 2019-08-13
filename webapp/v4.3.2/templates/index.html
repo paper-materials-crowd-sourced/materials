@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+{% block title %}
+Index
+{% endblock %}
+
+{% block content %}
+    <div class="card text-center mt-5 mb-5">
+        <div class="card-header">
+            Indexing
+        </div>
+        <div class="card-body">
+            <h5 class="card-title">Admin Manager</h5>
+            <p class="card-text">Manage Website</p>
+            <a href="/admin" class="btn btn-primary">Admin Panel</a>
+        </div>
+
+        <div class="card-body">
+            <h5 class="card-title">Answers</h5>
+            <p class="card-text">You can see answers and their snippet codes</p>
+            <a href="{% url "code_answers_list" %}" class="btn btn-primary">Answers</a>
+        </div>
+
+        <div class="card-body">
+            <h5 class="card-title">Tags</h5>
+            <p class="card-text">You can see tags and their answers</p>
+            <a href="{% url "tag_list" %}" class="btn btn-primary">Tags</a>
+        </div>
+
+{#        <div class="card-body">#}
+{#            <h5 class="card-title">Check Algorithm</h5>#}
+{#            <p class="card-text">You can see Accuracy</p>#}
+{#            <a href="{% url "check_gh_result_keyword_meter" %}" class="btn btn-primary">Check</a>#}
+{#        </div>#}
+    </div>
+{% endblock %}

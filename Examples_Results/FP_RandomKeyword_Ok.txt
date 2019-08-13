@@ -1,0 +1,15 @@
+https://raw.githubusercontent.com/A-Alaa/rosalind-cpp/master/src/algorithm/common.hpp
+https://raw.githubusercontent.com/isc1/wandurr/master/wandurr1.cpp
+https://raw.githubusercontent.com/TheKuko/BP/master/src/namon_win.cpp
+https://raw.githubusercontent.com/halmd-org/cuda-wrapper/master/cuda_wrapper/host/allocator.hpp
+https://raw.githubusercontent.com/halmd-org/cuda-wrapper/master/cuda_wrapper/allocator.hpp
+https://raw.githubusercontent.com/alexdantas/idj/master/src/Window.cpp
+https://raw.githubusercontent.com/clangen/musikcube/master/src/plugins/nomaddecoder/NomadDecoder.cpp
+https://raw.githubusercontent.com/sftrabbit/CppSamples-Samples/master/common-tasks/classes/virtual-constructor.cpp
+https://raw.githubusercontent.com/JonWel/CoolProp/master/include/CPstrings.h
+https://raw.githubusercontent.com/mflagel/asdf_multiplat/master/PlantGenerator/src/plant_printer.cpp
+
+
+
+
+

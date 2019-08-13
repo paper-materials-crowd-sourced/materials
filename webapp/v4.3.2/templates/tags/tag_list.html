@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+
+{% block title %} Tag List {% endblock %}
+
+{% block content %}
+    <div class="list-group mt-2">
+        {% for tag_code in TagedCodes %}
+            <div class="row">
+                <div class="col-md-12">
+                    <h4>
+                        <a href="/tg/{{ tag_code.tag_id}}/" class="list-group-item list-group-item-dark">
+                            {{ forloop.counter }}. {{ tag_code.tag__name }}
+                            <span class="float-right">
+                                <span class="badge badge-success">
+                                    {% for key, value in tag_counts.items %}
+                                        {% if key == tag_code.tag_id %}
+                                            {{ value }}
+                                        {% endif %}
+                                    {% endfor %}
+                                </span>
+                            </span>
+                        </a>
+                    </h4>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+{% endblock %}
+
+{% block customs %}
+    <script src="{% static "js/answer.js" %}"></script>
+{% endblock %}

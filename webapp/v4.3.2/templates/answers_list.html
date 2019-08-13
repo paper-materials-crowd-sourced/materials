@@ -1,0 +1,87 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+
+{% block title %} Answers List {% endblock %}
+
+{% block content %}
+    <div>
+        <ul class="pagination justify-content-center">
+            {% if answers.has_previous %}
+                <li class="page-item">
+                    <a class="page-link" href="?page=1" >&laquo; first</a>
+                </li>
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ answers.previous_page_number }}">previous</a>
+                </li>
+            {% endif %}
+
+
+            <li class="page-item disabled">
+                <a class="page-link" href="#" >Page {{ answers.number }} of {{ answers.paginator.num_pages }}</a>
+            </li>
+
+            {% if answers.has_next %}
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ answers.next_page_number }}" >next</a>
+                </li>
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ answers.paginator.num_pages }}">last &raquo;</a>
+                </li>
+            {% endif %}
+        </ul>
+    </div>
+    <div class="text-center justify-content-center"><h5>{{ done_ }} / {{ all_ }}</h5></div>
+    <div class="list-group">
+        {% for answer in answers %}
+            <div class="row">
+                <div class="col-md-9">
+                    <h4>
+                        <a href="/answers/{{ answer.answer_id }}/" class="list-group-item list-group-item-dark">
+                            {{ answer.answer_id }}
+                            <span class="float-right">
+                                <span class="badge badge-success">
+                                    {{ answer.counts }}
+                                </span>
+                            </span>
+                        </a>
+                    </h4>
+                </div>
+                <div class="col-md-3 mt-3">
+                    <label for="is_done_{{ answer.answer_id }}">Done ?</label>
+                    <input type="checkbox" class="done_class" id="is_done_{{ answer.answer_id }}" {% if answer.is_done %} checked {% endif %}>
+                    <label id="is_done_{{ answer.answer_id }}_saved" style="color:#333333;"></label>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+    <div>
+        <ul class="pagination justify-content-center">
+            {% if answers.has_previous %}
+                <li class="page-item">
+                    <a class="page-link" href="?page=1" >&laquo; first</a>
+                </li>
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ answers.previous_page_number }}">previous</a>
+                </li>
+            {% endif %}
+
+
+            <li class="page-item disabled">
+                <a class="page-link" href="#" >Page {{ answers.number }} of {{ answers.paginator.num_pages }}</a>
+            </li>
+
+            {% if answers.has_next %}
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ answers.next_page_number }}" >next</a>
+                </li>
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ answers.paginator.num_pages }}">last &raquo;</a>
+                </li>
+            {% endif %}
+        </ul>
+    </div>
+{% endblock %}
+
+{% block customs %}
+    <script src="{% static "js/answer.js" %}"></script>
+{% endblock %}

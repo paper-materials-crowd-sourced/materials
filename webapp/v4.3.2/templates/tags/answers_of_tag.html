@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+
+{% block title %} Answers List {% endblock %}
+
+{% block content %}
+    <div class="list-group">
+        {% for answer in answers %}
+            <div class="row mt-1">
+                <div class="col-md-9">
+                    <h4>
+                        <a href="/answers/{{ answer.answer_id }}/" class="list-group-item list-group-item-dark">
+                            {{ forloop.counter }}. {{ answer.answer_id }}
+                            <span class="float-right">
+                                <span class="badge badge-success">
+                                    {{ answer.counts }}
+                                </span>
+                            </span>
+                        </a>
+                    </h4>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+{% endblock %}
+
+{% block customs %}
+    <script src="{% static "js/answer.js" %}"></script>
+{% endblock %}
