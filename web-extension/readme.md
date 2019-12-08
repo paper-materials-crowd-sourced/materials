@@ -15,3 +15,7 @@ Extension will create a warning overlay on vulnerable answers if you are visitin
 https://stackoverflow.com/questions/7724448/simple-json-string-escape-for-c
 
 Data for extension is hard-coded inside extension to improve performance. You can examine it at `contentScripts/content.js` line 45 
+
+Known problems
+----
+On Chrome based browsers, you might see "Unrecognized manifest key 'applications'." error. But you can ignore this message and continue to use extension([More info here](https://github.com/paper-materials-crowd-sourced/materials/issues/3)).
